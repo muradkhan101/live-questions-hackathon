@@ -21,7 +21,7 @@ export default class TopMessageList extends React.Component {
         return (
             <MessageContainer>
                 <MiniTitle name={"Top Questions"} />
-                {messages.sort((a, b) => scores[a.id] < scores[b.id] ? 1 : -1)
+                {messages.slice().sort((a, b) => scores[a.id] < scores[b.id] ? 1 : -1)
                     .filter( (x, i) => i < 2)
                     .map(message => <Message
                         replies={replies[message.id]}

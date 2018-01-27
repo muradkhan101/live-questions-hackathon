@@ -9,6 +9,9 @@ import Header from './header';
 import MessageBox from './ChatBox/messagebox';
 import MiniTitle from './Profile/minititle';
 
+import { BASEURL } from '../shared/constants';
+import fetch from 'node-fetch';
+
 let Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -30,10 +33,11 @@ export default class Main extends React.Component {
         replies: {}, // Maps message id to array of replies
         scores: {}, // Maps message + reply ids to score
         name: '',
+        context: '',
     }
     
     componentDidMount() {
-        this.state.socket = openSocket('http://localhost:8000');
+        this.state.socket = openSocket('http://localhost:8001');
 
         this.state.socket.on('new message', (message) => {
             this.setState({messages: [...this.state.messages, message]})
@@ -66,7 +70,21 @@ export default class Main extends React.Component {
         }
     }
     question(data) {
-        console.log('new message', data);
+        fetch(`${BASEURL}/conversation`,{
+            method: 'post',
+            body: JSON.stringify({
+                message: data.message,
+                context: this.state.context,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then( res => res.json())
+        .then(response => {
+            this.setState({
+                context: response.context
+            })
+        })
         this.state.socket.emit('message', data);
     }
     login({message}) {
@@ -79,7 +97,7 @@ export default class Main extends React.Component {
         return (
             <Container>
                 <Header/>
-                { messages.length > 5 ? <TopMessageList messages={messages} replies={replies} /> : null }
+                { messages.length > 4 ? <TopMessageList messages={messages} replies={replies} /> : null }
                 <MessageList messages={messages} replies={replies} />
                 { 
                 this.state.name !== ''
