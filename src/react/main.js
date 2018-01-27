@@ -12,6 +12,8 @@ import MiniTitle from './Profile/minititle';
 import { BASEURL } from '../shared/constants';
 import fetch from 'node-fetch';
 
+import DrawingCanvas from './canvas/canvas';
+
 let Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -70,16 +72,21 @@ export default class Main extends React.Component {
         }
     }
     question(data) {
-        fetch(`${BASEURL}/conversation`,{
+        let requestOptions = {
             method: 'post',
-            body: JSON.stringify({
-                message: data.message,
-                context: this.state.context,
-            }),
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then( res => res.json())
+        };
+
+        requestOptions.body = this.state.context
+            ?  JSON.stringify({
+                message: data.message,
+                context: this.state.context,
+            }) : JSON.stringify({ message: data.message });
+
+        fetch(`${BASEURL}/conversation`, requestOptions)
+        .then( res => res.json())
         .then(response => {
             this.setState({
                 context: response.context
@@ -103,6 +110,7 @@ export default class Main extends React.Component {
                 this.state.name !== ''
                     ? <span style={{'marginBottom': '50px'}}>
                         <StickToBottom>
+                            <DrawingCanvas/>
                             <MessageBox placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
                         </StickToBottom>
                      </span>
