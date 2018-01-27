@@ -1,5 +1,5 @@
 import React from 'react';
-import { number, object } from 'prop-types';
+import { string } from 'prop-types';
 import styled from 'styled-components';
 
 import { CHARCOAL, FONTSIZE, SANSSERIF } from '../../shared/constants';
@@ -19,9 +19,10 @@ let TextInput = styled.input`
     margin-right: 8px;
     border: none;
     flex-grow: 1;
+    border-radius: 4px;
     :focus {
         outline: none;
-        box-shadow: 0px 0.5px 0.5px ${CHARCOAL};
+        box-shadow: 0px 1px 2px ${CHARCOAL};
     }
 `
 let Image = styled.img`
@@ -32,14 +33,32 @@ let Image = styled.img`
 `
 export default class MessageBox extends React.Component {
     static contextTypes = {
-        id: number,
-        socket: object
+        name: string
     }
+    state = {
+        message : ''
+    }
+    checkKeypress(key) {
+        if (key === 13 && this.state.message !== '') {
+            this.props.onSubmit({
+                message: this.state.message,
+                name: this.context.name,
+                timestamp: Date.now()
+            })
+            this.state.message = '';
+        }
+    }
+    updateState(value) { this.setState({message: value}); }
+    // key = Enter or charCode = 13
     render() {
         return (
             <InputContainer>
-                <TextInput onKeyPress={(e) => console.log(e.key, e.charCode)} type="text" placeholder="Answer question"/>
-                <Image src="airplane.svg"/>
+                <TextInput 
+                onKeyPress={(e) => this.checkKeypress(e.charCode)}
+                onChange={(e) => this.updateState(e.target.value)}
+                value={this.state.message}
+                type="text" placeholder={this.props.placeholder} />
+                <Image onClick={() => this.checkKeypress(13)} src="airplane.svg"/>
             </InputContainer>
         )
     }

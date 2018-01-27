@@ -34,11 +34,10 @@ let Container = styled.div`
 export default class VoteSystem extends React.Component {
     static contextTypes = {
         id: number,
-        score: number
     }
     render() {
-        let { id, score } = this.context;
-        let { vote } = this.props;
+        let { id } = this.context;
+        let { vote, score } = this.props;
         return (
             <Container>
                 <UpArrow onClick={() => vote('upvote', id)}/>

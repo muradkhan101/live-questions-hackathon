@@ -6,14 +6,13 @@ let Name = styled.p`
     font-family: ${SANSSERIF};
     font-size: ${FONTSIZE.md};
     display: inline-block;
+    color: ${CHARCOAL};
 `
-export default class UserName extends React.Component {
+export default class MiniTitle extends React.Component {
     render() {
         let { name, style } = this.props;
-        let styles = {'color': style || CHARCOAL }
-        console.log('Name started');
         return (
-            <Name style={styles}>{ name }</Name>
+            <Name style={style}>{ name }</Name>
         )
     }
 }
