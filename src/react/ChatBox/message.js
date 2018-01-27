@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { number } from 'prop-types';
+import { number, object } from 'prop-types';
 import { FONTSIZE, CHARCOAL, SANSSERIF } from '../../shared/constants';
 import UserName from '../Profile/name';
 import TimeStamp from '../Profile/timestamp';
 import ProfileImage from '../Profile/images';
 import Voter from './upvote';
+import MessageBox from './messagebox';
 
 let Text = styled.div`
     font-family: ${SANSSERIF};
@@ -19,18 +20,27 @@ let Flex = styled.div`
 let FlexApart = styled.div`
     display: flex;
     justify-content: space-between;
+    width: 100%;
 `
 let TextContainer = styled.div`
     display:flex;
     flex-direction: column;
     margin-left: 16px;
 `
-
-
+let Children = styled.div`
+    width: 85%;
+    float: right;
+`
+let MessageList = styled.div`
+    margin-top: 16px;
+`
 export default class Message extends React.Component {
     static childContextTypes = {
         id: number,
-        score: number
+        score: number,
+    }
+    static contextTypes = {
+        socket: object
     }
     constructor(props) {
         super(props);
@@ -42,25 +52,32 @@ export default class Message extends React.Component {
             score: this.state.score
         }
     }
-    vote(score) {
-
+    vote(id, score) {
+        this.context.socket.emit(score, {id: id});
     }
     render() {
-        let { message, name, imageUrl, timestamp } = this.state;
+        let { message, name, imageUrl, timestamp, id, children } = this.state;
+        let { isChild } = this.props;
         return (
-            <FlexApart>
-                <Flex>
-                    <ProfileImage imageUrl={imageUrl}/>
-                    <TextContainer>
-                        <Flex>
-                            <UserName name={name}/>
-                            <TimeStamp timestamp={timestamp} style={{'margin-left': '16px'}}/>
-                        </Flex>
-                        <Text style={{'margin-top': '12px'}}> {message} </Text>
-                    </TextContainer>
-                </Flex>
-                <Voter />
-            </FlexApart>
+            <MessageList>
+                <FlexApart>
+                    <Flex>
+                        <ProfileImage imageUrl={imageUrl}/>
+                        <TextContainer>
+                            <Flex>
+                                <UserName name={name}/>
+                                <TimeStamp timestamp={timestamp} style={{'margin-left': '16px'}}/>
+                            </Flex>
+                            <Text style={{'marginTop': '12px'}}> {message} </Text>
+                        </TextContainer>
+                    </Flex>
+                    <Voter vote={() => (score) => this.vote(id, score)}/>
+                </FlexApart>
+                {isChild ? null : <MessageBox />}
+                <Children>
+                    { children ? children.map(child => <Message isChild={true} key={child.id} data={child} />) : null }
+                </Children>
+            </MessageList>
         )
     }
 }

@@ -41,9 +41,9 @@ export default class VoteSystem extends React.Component {
         let { vote } = this.props;
         return (
             <Container>
-                <UpArrow onClick={() => vote(1)}/>
+                <UpArrow onClick={() => vote('upvote', id)}/>
                 <Text>{score}</Text>
-                <DownArrow onClick={() => vote(-1)}/>
+                <DownArrow onClick={() => vote('downvote', id)}/>
             </Container>
         )
     }

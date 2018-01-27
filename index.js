@@ -33,25 +33,34 @@ io.on('connection', (socket) => {
     socket.on('message', (data) => {
         let newMessage = Object.assign(data, {
             id: messageIds++,
-            score: 0
+            score: 0,
+            children: []
         });
         messages[messageIds - 1] = newMessage;
         io.emit('message', data);
     })
 
-    socket.on('upvote', (id) => {
+    socket.on('upvote', ({id}) => {
         let updated = helper.incrementScore(Object.assign({}, messages[id]));
         messages[id] = updated;
         socket.emit('score update', updated);
     })
 
-    socket.on('downvote', (id) => {
+    socket.on('downvote', ({id}) => {
         let updated = helper.decrementScore(Object.assign({}, messages[id]));
         messages[id] = updated;
         socket.emit('score update', updated);
     })
+    socket.on('reply', (id, data) => {
+        let newMessage = Object.assign(data, {
+            id: messageIds++,
+            score: 0
+        });
+        messages[id].children.push(newMessage);
+        socket.emit('new reply', {id, reply: newMessage})
+    })
 })
 
-http.listen(3000, () => {
-    console.log('Listening on port: 3000');
+http.listen(8000, () => {
+    console.log('Listening on port: 8000');
 })
