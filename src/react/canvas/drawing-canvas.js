@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { object } from 'prop-types';
 import DrawableCanvas from 'react-drawable-canvas';
 import ColorOption from './colorOptions';
 import Uploader from './photouploader';
@@ -9,8 +10,15 @@ let Container = styled.div`
     align-items: center;
     flex-direction: column;
 `
+let Flex = styled.div`
+    display: flex;
+    justify-context: space-between;
+`
 
 export default class DrawingCanvas extends React.Component {
+    static contextTypes = {
+        socket: object
+    }
     state = {
         currentUrl: undefined,
         canvas: undefined
@@ -25,7 +33,6 @@ export default class DrawingCanvas extends React.Component {
             let file = e.target.files[0];
             let url = window.URL.createObjectURL(file);
             this.setState({currentUrl: url});
-
             // Load photo to Canvas
             let this_ = this;
             let ctx = this_.state.canvas.getContext('2d');
@@ -47,14 +54,24 @@ export default class DrawingCanvas extends React.Component {
                     resolve(imgData);
                 }
             })
-
         }
+    }
+    sendPhoto() {
+        let { canvas } = this.state;
+        let imagedata = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+        var canvaspixelarray = imagedata.data;
+        var canvaspixellen = canvaspixelarray.length;
+        var bytearray = new Uint8Array(canvaspixellen);
+        for (var i = 0; i < canvaspixellen; ++i) {
+            bytearray[i] = canvaspixelarray[i];
+        }
+        this.context.socket.emit('canvas', {imageData: bytearray.buffer, width: canvas.width, height: canvas.height});
     }
     render() {
         let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white'];
         return (
             <Container>
-                <DrawableCanvas />
+                <DrawableCanvas onStop={() => this.sendPhoto()}/>
                 <Uploader onChange={(e) => this.onChange(e)} />
             </Container>
         )

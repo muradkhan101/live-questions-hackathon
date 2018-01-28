@@ -65,6 +65,26 @@ io.on('connection', (socket) => {
         console.log('new reply', data.message);
         socket.emit('new reply', { replyId, reply: newMessage})
     })
+
+    socket.on('canvas', ({imageData, width, height}) => {
+        // let str = imageData.binaryData.toString('utf-16le');
+        // let json = JSON.parse(str);
+        // str = JSON.stringify(json);
+        // let buf = new Buffer(str, ENCODING);
+        var error;
+        let data;
+        try {
+            data =  decodeURIComponent(escape(imageData));
+        } catch (_error) {
+            error = _error;
+            if (error instanceof URIError) {
+                data = imageData;
+            } else {
+                throw error;
+            }
+        }
+        socket.emit('update canvas', {imageData, width, height});
+    })
 })
 
 http.listen(8001, () => {

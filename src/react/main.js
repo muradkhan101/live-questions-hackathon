@@ -12,7 +12,8 @@ import MiniTitle from './Profile/minititle';
 import { BASEURL } from '../shared/constants';
 import fetch from 'node-fetch';
 
-import DrawingCanvas from './canvas/canvas';
+import DrawingCanvas from './canvas/drawing-canvas';
+import ViewingCanvas from './canvas/viewing-canvas';
 
 let Container = styled.div`
     display: flex;
@@ -111,6 +112,7 @@ export default class Main extends React.Component {
                     ? <span style={{'marginBottom': '50px'}}>
                         <StickToBottom>
                             <DrawingCanvas/>
+                            <ViewingCanvas />
                             <MessageBox placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
                         </StickToBottom>
                      </span>
