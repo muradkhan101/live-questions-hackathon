@@ -1,11 +1,11 @@
 import React from 'react';
-
+import DrawingCanvas from './canvas/canvas';
 
 export default class Presenter extends React.Component {
     render() {
         return (
             <div>
-                <h1>Hello from presenter component </h1>
+                <DrawingCanvas/>
             </div>
         )
     }

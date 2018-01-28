@@ -1,0 +1,128 @@
+import React from 'react';
+import styled from 'styled-components';
+import ColorOption from './colorOptions';
+import DrawableCanvas from 'react-drawable-canvas';
+
+let Container = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+`
+let ColorContainer = styled.div`
+    display: flex;
+    margin-top: 8px;
+    flex-wrap: wrap;
+`
+export default class DrawingCanvas extends React.Component {
+    state = {
+        ctx : undefined,
+        flag : false,
+        prevX : 0,
+        currX : 0,
+        prevY : 0,
+        currY : 0,
+        dot_flag : false,
+        x : "black",
+        y : 2
+    }
+    componentDidMount() {
+        this.refs.canvas.addEventListener("mousemove", (e) => {
+            this.findxy('move', e)
+        }, false);
+        this.refs.canvas.addEventListener("mousedown", (e) => {
+            this.findxy('down', e)
+        }, false);
+        this.refs.canvas.addEventListener("mouseup", (e) => {
+            this.findxy('up', e)
+        }, false);
+        this.refs.canvas.addEventListener("mouseout", (e) => {
+            this.findxy('out', e)
+        }, false);
+        this.setState({
+            ctx: this.refs.canvas.getContext('2d')
+        })
+    }
+
+    color(color) {
+        var x;
+        switch (color) {
+            case "green":
+                x = "green";
+                break;
+            case "blue":
+                x = "blue";
+                break;
+            case "red":
+                x = "red";
+                break;
+            case "yellow":
+                x = "yellow";
+                break;
+            case "orange":
+                x = "orange";
+                break;
+            case "black":
+                x = "black";
+                break;
+            case "white":
+                x = "white";
+                break;
+            default:
+                x = "white";
+        }
+        this.state.x = x;
+        if (x == "white") this.state.y = 14;
+        else this.state.y = 2;
+    }
+
+    draw() {
+        this.state.ctx.beginPath();
+        this.state.ctx.moveTo(this.state.prevX, this.state.prevY);
+        this.state.ctx.lineTo(this.state.currX, this.state.currY);
+        this.state.ctx.strokeStyle = this.state.x;
+        this.state.ctx.lineWidth = this.state.y;
+        this.state.ctx.stroke();
+        this.state.ctx.closePath();
+    }
+    findxy(res, e) {
+        if (res == 'down') {
+            this.state.prevX = this.state.currX;
+            this.state.prevY = this.state.currY;
+            this.state.currX = e.clientX - this.refs.canvas.offsetLeft;
+            this.state.currY = e.clientY - this.refs.canvas.offsetTop;
+
+            this.state.flag = true;
+            this.state.dot_flag = true;
+            if (this.state.dot_flag) {
+                this.state.ctx.beginPath();
+                this.state.ctx.fillStyle = this.state.x;
+                this.state.ctx.fillRect(this.state.currX, this.state.currY, 2, 2);
+                this.state.ctx.closePath();
+                this.state.dot_flag = false;
+            }
+        }
+        if (res == 'up' || res == "out") {
+            this.state.flag = false;
+        }
+        if (res == 'move') {
+            if (this.state.flag) {
+                this.state.prevX = this.state.currX;
+                this.state.prevY = this.state.currY;
+                this.state.currX = e.clientX - this.refs.canvas.offsetLeft;
+                this.state.currY = e.clientY - this.refs.canvas.offsetTop;
+                this.draw();
+            }
+        }
+    }
+    render() {
+        let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white'];
+        return (
+            <Container>
+                <canvas ref="canvas" />
+                <ColorContainer>
+                    {colors.map(color => <ColorOption color={color} onClick={() => this.color(color)} key={color} />)}
+                </ColorContainer>
+            </Container>
+        )
+    }
+}
