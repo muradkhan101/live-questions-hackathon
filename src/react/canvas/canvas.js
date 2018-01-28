@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { object } from 'prop-types';
 import DrawableCanvas from 'react-drawable-canvas';
 import ColorOption from './colorOptions';
 import Uploader from './photouploader';
+import { BLUE, FONTSIZE, CHARCOAL } from '../../shared/constants';
 
 let Container = styled.div`
     display: flex;
@@ -14,11 +14,19 @@ let Flex = styled.div`
     display: flex;
     justify-context: space-between;
 `
-
-export default class DrawingCanvas extends React.Component {
-    static contextTypes = {
-        socket: object
+let Button = styled.button`
+    background: ${BLUE};
+    padding: 4px 6px;
+    font-size: ${FONTSIZE.sm};
+    border-radius: 5px;
+    border-bottom: 3px solid ${CHARCOAL};
+    line-height: 0;
+    :focus {
+        outline: none;
+        border-bottom: 1px solid ${CHARCOAL};
     }
+`
+export default class DrawingCanvas extends React.Component {
     state = {
         currentUrl: undefined,
         canvas: undefined
@@ -33,6 +41,7 @@ export default class DrawingCanvas extends React.Component {
             let file = e.target.files[0];
             let url = window.URL.createObjectURL(file);
             this.setState({currentUrl: url});
+
             // Load photo to Canvas
             let this_ = this;
             let ctx = this_.state.canvas.getContext('2d');
@@ -40,11 +49,7 @@ export default class DrawingCanvas extends React.Component {
             img.crossOrigin = 'Anonymous';
             return new Promise((resolve, reject) => {
                 img.onload = function () {
-<<<<<<< HEAD
                     let w = Math.min(this.width, 500);
-=======
-                    let w = Math.min(this.width, 200);
->>>>>>> c76d4ef810ed50b940a1f13ca35b2888076ecb8a
                     let h = Math.round( this.height / this.width * w);
                     this_.state.canvas.height = h;
                     this_.state.canvas.width = w;
@@ -58,25 +63,17 @@ export default class DrawingCanvas extends React.Component {
                     resolve(imgData);
                 }
             })
+
         }
-    }
-    sendPhoto() {
-        let { canvas } = this.state;
-        let imagedata = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-        var canvaspixelarray = imagedata.data;
-        var canvaspixellen = canvaspixelarray.length;
-        var bytearray = new Uint8Array(canvaspixellen);
-        for (var i = 0; i < canvaspixellen; ++i) {
-            bytearray[i] = canvaspixelarray[i];
-        }
-        this.context.socket.emit('canvas', {imageData: bytearray.buffer, width: canvas.width, height: canvas.height});
     }
     render() {
         let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white'];
         return (
             <Container>
-                <DrawableCanvas onStop={() => this.sendPhoto()}/>
-                <Uploader onChange={(e) => this.onChange(e)} />
+                <DrawableCanvas />
+                <Flex>
+                    <Uploader onChange={(e) => this.onChange(e)} />
+                </Flex>
             </Container>
         )
     }

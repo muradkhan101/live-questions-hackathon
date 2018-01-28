@@ -12,9 +12,6 @@ import MiniTitle from './Profile/minititle';
 import { BASEURL } from '../shared/constants';
 import fetch from 'node-fetch';
 
-import DrawingCanvas from './canvas/drawing-canvas';
-import ViewingCanvas from './canvas/viewing-canvas';
-
 let Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -24,7 +21,7 @@ let StickToBottom = styled.div`
     bottom: 8px;
     width: 100%;
 `
-export default class Main extends React.Component {
+export default class Attendee extends React.Component {
     static childContextTypes = {
         socket: object,
         name: string,
@@ -73,21 +70,16 @@ export default class Main extends React.Component {
         }
     }
     question(data) {
-        let requestOptions = {
+        fetch(`${BASEURL}/conversation`,{
             method: 'post',
+            body: JSON.stringify({
+                message: data.message,
+                context: this.state.context,
+            }),
             headers: {
                 'Content-Type': 'application/json'
             }
-        };
-
-        requestOptions.body = this.state.context
-            ?  JSON.stringify({
-                message: data.message,
-                context: this.state.context,
-            }) : JSON.stringify({ message: data.message });
-
-        fetch(`${BASEURL}/conversation`, requestOptions)
-        .then( res => res.json())
+        }).then( res => res.json())
         .then(response => {
             this.setState({
                 context: response.context
@@ -111,8 +103,6 @@ export default class Main extends React.Component {
                 this.state.name !== ''
                     ? <span style={{'marginBottom': '50px'}}>
                         <StickToBottom>
-                            <DrawingCanvas/>
-                            <ViewingCanvas />
                             <MessageBox placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
                         </StickToBottom>
                      </span>
