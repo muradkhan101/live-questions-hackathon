@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import {
+    HashRouter,
+    Route
+  } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
-import Main from './react/main';
 import Attendee from './react/attendee';
+import Presenter from './react/presenter';
 
 ReactDOM.render((
-    <Router history={hashHistory}>
-        <Route path='/presenter' component={presenter} />
-        <Route path='/attendee' component={Attendee} />
-   </Router>), document.getElementById('root'));
+    <HashRouter>
+        <div>
+            <Route path='/presenter' component={Presenter} />
+            <Route path='/attendee' component={Attendee} />
+        </div>
+   </HashRouter>), document.getElementById('root'));
 registerServiceWorker();
