@@ -12,4 +12,4 @@ export let FONTSIZE = {
     xl: '36px',
 }
 
-export let BASEURL = 'http://localhost:8000';
+export let BASEURL = 'https://hackathon-valley127.herokuapp.com';

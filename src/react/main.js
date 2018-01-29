@@ -40,7 +40,15 @@ export default class Main extends React.Component {
     }
     
     componentDidMount() {
-        this.state.socket = openSocket('http://localhost:8001');
+        this.state.socket = openSocket(BASEURL);
+
+        this.state.socket.on('initial data', ({messages, scores, replies}) => {
+            this.setState({
+                messages: [...this.state.messages, ...messages],
+                replies: Object.assign({}, this.state.replies, replies),
+                scores: Object.assign({}, this.state.scores, scores),
+            })
+        })
 
         this.state.socket.on('new message', (message) => {
             this.setState({messages: [...this.state.messages, message]})
@@ -101,7 +109,7 @@ export default class Main extends React.Component {
         });
     }
     render() {
-        let { messages, replies, scores } = this.state;
+        let { messages, replies } = this.state;
         return (
             <Container>
                 <Header/>

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CHARCOAL, SANSSERIF, FONTSIZE } from '../../shared/constants';
 
-let Name = styled.p`
+let Name = styled.span`
     font-family: ${SANSSERIF};
     font-size: ${FONTSIZE.md};
     display: inline-block;

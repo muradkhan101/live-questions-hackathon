@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { GREY, SANSSERIF, FONTSIZE } from '../../shared/constants';
 
-let Text = styled.p`
+let Text = styled.span`
     color: ${GREY};
     font-family: ${SANSSERIF};
     font-size: ${FONTSIZE.xs};
