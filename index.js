@@ -1,4 +1,5 @@
-let app = require('express')();
+let express = require('express')
+let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let socket = require('socket.io-client')('https://hackathon-valley127.herokuapp.com');
@@ -12,6 +13,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+app.use(express.static('/build'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/conversation', (req, res) => {
