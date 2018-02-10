@@ -58,17 +58,11 @@ export default class DrawingCanvas extends React.Component {
     }
     sendPhoto() {
         let { canvas } = this.state;
-        let imagedata = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-        var canvaspixelarray = imagedata.data;
-        var canvaspixellen = canvaspixelarray.length;
-        var bytearray = new Uint8Array(canvaspixellen);
-        for (var i = 0; i < canvaspixellen; ++i) {
-            bytearray[i] = canvaspixelarray[i];
-        }
-        this.context.socket.emit('canvas', {imageData: bytearray.buffer, width: canvas.width, height: canvas.height});
+        let imageData = canvas.toDataURL();
+        this.context.socket.emit('canvas', {imageData: imageData});
     }
     render() {
-        let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white'];
+        let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white']
         return (
             <Container>
                 <DrawableCanvas onStop={() => this.sendPhoto()}/>

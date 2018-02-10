@@ -15,6 +15,12 @@ import fetch from 'node-fetch';
 import DrawingCanvas from './canvas/drawing-canvas';
 import ViewingCanvas from './canvas/viewing-canvas';
 
+let Flex = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`
+
 let Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -40,15 +46,7 @@ export default class Main extends React.Component {
     }
     
     componentDidMount() {
-        this.state.socket = openSocket(BASEURL);
-
-        this.state.socket.on('initial data', ({messages, scores, replies}) => {
-            this.setState({
-                messages: [...this.state.messages, ...messages],
-                replies: Object.assign({}, this.state.replies, replies),
-                scores: Object.assign({}, this.state.scores, scores),
-            })
-        })
+        this.state.socket = openSocket('http://localhost:8001');
 
         this.state.socket.on('new message', (message) => {
             this.setState({messages: [...this.state.messages, message]})
@@ -109,23 +107,26 @@ export default class Main extends React.Component {
         });
     }
     render() {
-        let { messages, replies } = this.state;
+        let { messages, replies, scores } = this.state;
+        console.log(this.state.socket);
         return (
             <Container>
                 <Header/>
                 { messages.length > 4 ? <TopMessageList messages={messages} replies={replies} /> : null }
-                <MessageList messages={messages} replies={replies} />
+                <Flex>
+                    <MessageList messages={messages} replies={replies} />
+                    <ViewingCanvas />
+                    <DrawingCanvas/>
+                </Flex>
                 { 
-                this.state.name !== ''
+                    this.state.name !== ''
                     ? <span style={{'marginBottom': '50px'}}>
                         <StickToBottom>
-                            <DrawingCanvas/>
-                            <ViewingCanvas />
                             <MessageBox placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
                         </StickToBottom>
                      </span>
                     : <StickToBottom>
-                        <MiniTitle style={{'marginLeft': '24px'}}name={"Log-in to ask a question!"} />
+                        <MiniTitle style={{'marginLeft': '24px'}} name={"Log-in to ask a question!"} />
                         <MessageBox placeholder={"Choose a username!"} onSubmit={(data) => this.login(data)} />
                     </StickToBottom>
                 }
