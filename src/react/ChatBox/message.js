@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { number, object } from 'prop-types';
+import { number, object, string } from 'prop-types';
 import { FONTSIZE, CHARCOAL, SANSSERIF } from '../../shared/constants';
 import UserName from '../Profile/minititle';
 import TimeStamp from '../Profile/timestamp';
@@ -44,7 +44,8 @@ export default class Message extends React.Component {
     }
     static contextTypes = {
         socket: object,
-        scores: object
+        scores: object,
+        room: string,
     }
     constructor(props) {
         super(props);
@@ -57,11 +58,10 @@ export default class Message extends React.Component {
         }
     }
     vote(id, score) {
-        console.log(id);
-        this.context.socket.emit(score, {id: id});
+        this.context.socket.emit(score, {id: id}, this.context.room);
     }
     reply(id, data) {
-        this.context.socket.emit('reply', Object.assign(data, {id: id}))
+        this.context.socket.emit('reply', Object.assign(data, { id: id }), this.context.room)
     }
     render() {
         let { message, name, imageUrl, timestamp, id } = this.state;

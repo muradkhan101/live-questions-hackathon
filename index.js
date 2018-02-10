@@ -49,10 +49,11 @@ app.post('/conversation', (req, res) => {
     })
 })
 
-let messages = [];
+let messages = {};
 let replies = {};
 let scores = {};
 let messageIds = 0;
+let rooms = {};
 
 /*  Message structure
     {
@@ -70,56 +71,75 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    socket.emit('initial data', { 
-        messages: messages.slice(messages.length - 3, messages.length),
-        scores,
-        replies,
-    })
+    // socket.emit('initial data', { 
+    //     messages: messages.slice(messages.length - 3, messages.length),
+    //     scores,
+    //     replies,
+    // })
     console.log('Someone new is here!');
+
+    socket.on('subscribe', (room) => {
+        rooms[room] = rooms[room] + 1 || 1;
+        if (!messages[room]) messages[room] = [];
+        if (!scores[room]) scores[room] = {};
+        if (!replies[room]) replies[room] = {};
+
+        socket.join(room);
+    })
+
+    socket.on('unsubscribe', (room) => {
+        rooms[room] = rooms[room] - 1 || 0;
+        socket.leave(room);
+    })
 
     socket.on('disconnect', () => {
         console.log('Aaaaaand they\'re gone :(');
     })
 
-    socket.on('message', (data) => {
+    socket.on('message', (data, room) => {
         let newMessage = Object.assign(data, {
             id: messageIds++,
         });
-        messages.push(newMessage);
-        scores[messageIds - 1] = 0;
-        replies[messageIds - 1] = [];
-        console.log('new message', newMessage);
-        io.emit('new message', newMessage);
+        messages[room].push(newMessage);
+        scores[room][messageIds - 1] = 0;
+        replies[room][messageIds - 1] = [];
+        console.log('new message in room:', room, newMessage);
+
+        // This sends to everyone in the room, including sender
+        io.in(room).emit('new message', newMessage);
+
+        // Whle this sends to everyone in room except sender
+        // socket.in(room).emit()
     })
 
-    socket.on('upvote', ({ id }) => {
-        scores[id] = scores[id] + 1;
-        console.log('score updated', { score: scores[id], id });
-        socket.emit('score update', { score: scores[id], id });
+    socket.on('upvote', ({ id }, room) => {
+        scores[room][id] = scores[room][id] + 1;
+        console.log('score updated', { score: scores[room][id], id });
+        io.in(room).emit('score update', { score: scores[room][id], id });
     })
 
-    socket.on('downvote', ({ id }) => {
-        scores[id] = scores[id] - 1;
-        console.log('score updated', { score: scores[id], id });
-        socket.emit('score update', { score: scores[id], id });
+    socket.on('downvote', ({ id }, room) => {
+        scores[room][id] = scores[room][id] - 1;
+        console.log('score updated', { score: scores[room][id], id });
+        io.in(room).emit('score update', { score: scores[room][id], id });
     })
-    socket.on('reply', (data) => {
+    socket.on('reply', (data, room) => {
         let replyId = data.id;
         let newMessage = Object.assign(data, {
             id: messageIds++,
         });
-        if (!replies[replyId]) replies[replyId] = [];
-        replies[replyId].push(newMessage);
-        scores[messageIds - 1] = 0;
+        if (!replies[room][replyId]) replies[room][replyId] = [];
+        replies[room][replyId].push(newMessage);
+        scores[room][messageIds - 1] = 0;
         console.log('new reply', data.message);
-        socket.emit('new reply', { replyId, reply: newMessage })
+        io.in(room).emit('new reply', { replyId, reply: newMessage })
     })
 
-    socket.on('canvas', ({ imageData }) => {
-        socket.emit('update canvas', { imageData: imageData });
+    socket.on('canvas', (imageData, room ) => {
+        io.in(room).emit('update canvas', imageData );
     })
 })
 
 http.listen(process.env.PORT || 5000, () => {
-    console.log('Listening on port: 8000');
+    console.log('Listening on port:', process.env.PORT || 5000);
 })

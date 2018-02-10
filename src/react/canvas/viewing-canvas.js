@@ -18,12 +18,12 @@ export default class ViewingCanvas extends React.Component {
                 this.receivePhoto(imageData, height, width);
             })
     }
-    receivePhoto({imageData}) {
+    receivePhoto(imageData) {
         let image = new Image();
         image.onload = () => {
             this.refs.canvas.width = image.width;
             this.refs.canvas.height = image.height;
-            this.ctx.drawImage(image, 0, 0);
+            this.state.ctx.drawImage(image, 0, 0);
         }
         image.src = imageData;
     }

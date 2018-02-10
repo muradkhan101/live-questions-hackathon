@@ -34,7 +34,8 @@ export default class Main extends React.Component {
     static childContextTypes = {
         socket: object,
         name: string,
-        scores: object
+        scores: object,
+        room: string,
     }
     state = {
         socket: undefined,
@@ -46,7 +47,7 @@ export default class Main extends React.Component {
     }
     
     componentDidMount() {
-        this.state.socket = openSocket('http://localhost:8001');
+        this.state.socket = openSocket('http://localhost:5000');
 
         this.state.socket.on('new message', (message) => {
             this.setState({messages: [...this.state.messages, message]})
@@ -70,12 +71,15 @@ export default class Main extends React.Component {
         this.state.socket.on('initial data', (messages) => {
             
         })
+
+        this.state.socket.emit('subscribe', this.props.room);
     }
     getChildContext() {
         return {
             socket: this.state.socket,
             name: this.state.name,
             scores: this.state.scores,
+            room: this.props.room || Math.floor(Math.random() * 100000),
         }
     }
     question(data) {
@@ -99,35 +103,44 @@ export default class Main extends React.Component {
                 context: response.context
             })
         })
-        this.state.socket.emit('message', data);
+        this.state.socket.emit('message', data, this.getChildContext().room);
     }
     login({message}) {
         this.setState({
             name: message,
         });
     }
+
+    messageCheck(key) {
+        if (key === 13 && this.state.message !== '') {
+            this.props.onSubmit({
+                message: this.state.message,
+                name: this.context.name,
+                timestamp: Date.now()
+            })
+            this.state.message = '';
+        }
+    }
     render() {
         let { messages, replies, scores } = this.state;
-        console.log(this.state.socket);
         return (
             <Container>
-                <Header/>
+                <Header event={this.props.room}/>
                 { messages.length > 4 ? <TopMessageList messages={messages} replies={replies} /> : null }
                 <Flex>
                     <MessageList messages={messages} replies={replies} />
                     <ViewingCanvas />
-                    <DrawingCanvas/>
                 </Flex>
                 { 
                     this.state.name !== ''
                     ? <span style={{'marginBottom': '50px'}}>
                         <StickToBottom>
-                            <MessageBox placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
+                            <MessageBox checkKeypress={this.messageCheck}  placeholder={"Ask a question"} onSubmit={(data) => this.question(data)} />
                         </StickToBottom>
                      </span>
                     : <StickToBottom>
                         <MiniTitle style={{'marginLeft': '24px'}} name={"Log-in to ask a question!"} />
-                        <MessageBox placeholder={"Choose a username!"} onSubmit={(data) => this.login(data)} />
+                        <MessageBox checkKeypress={this.messageCheck} placeholder={"Choose a username!"} onSubmit={(data) => this.login(data)} />
                     </StickToBottom>
                 }
             </Container>

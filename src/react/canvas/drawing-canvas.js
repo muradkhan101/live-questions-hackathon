@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { object } from 'prop-types';
+import { object, string } from 'prop-types';
 import DrawableCanvas from 'react-drawable-canvas';
 import ColorOption from './colorOptions';
 import Uploader from './photouploader';
 
-let Container = styled.div`
+let Container = styled.main`
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -17,7 +17,8 @@ let Flex = styled.div`
 
 export default class DrawingCanvas extends React.Component {
     static contextTypes = {
-        socket: object
+        socket: object,
+        room: string,
     }
     state = {
         currentUrl: undefined,
@@ -25,7 +26,7 @@ export default class DrawingCanvas extends React.Component {
     }
     componentDidMount() {
         this.setState({
-            canvas : document.querySelector('canvas')
+            canvas : document.querySelector('main canvas')
         })
     }
     onChange(e) {
@@ -59,12 +60,12 @@ export default class DrawingCanvas extends React.Component {
     sendPhoto() {
         let { canvas } = this.state;
         let imageData = canvas.toDataURL();
-        this.context.socket.emit('canvas', {imageData: imageData});
+        this.context.socket.emit('canvas', imageData, this.context.room);
     }
     render() {
         let colors = ['red', 'blue', 'green', 'yellow', 'orange', 'black', 'white']
         return (
-            <Container>
+            <Container ref="canvasContainer">
                 <DrawableCanvas onStop={() => this.sendPhoto()}/>
                 <Uploader onChange={(e) => this.onChange(e)} />
             </Container>

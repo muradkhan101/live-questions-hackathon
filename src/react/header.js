@@ -28,17 +28,13 @@ let Subtitle = styled.h2`
     margin-top: 12px;
 `
 export default class Header extends React.Component {
-    state = {
-        event: "Valley Hackathon",
-        presenter: "Rami Malek",
-    }
     render() {
-        let { event, presenter } = this.state;
+        let { event, presenter } = this.props;
         return (
             <Background>
                 <div>
                     <MainTitle>{event}</MainTitle>
-                    <Subtitle>Presented by: {presenter} </Subtitle>
+                    <Subtitle>Presented by: {presenter || 'Rami Malek'} </Subtitle>
                     <Subtitle>{(new Date()).toDateString()} </Subtitle>
                 </div>
                 <ProfilePicture maxSize={'100px'} imageUrl={'rami.jpg'} />

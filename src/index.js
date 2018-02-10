@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import Main from './react/main';
+import LoginScreen from './react/login';
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+ReactDOM.render(<LoginScreen />, document.getElementById('root'));
 registerServiceWorker();

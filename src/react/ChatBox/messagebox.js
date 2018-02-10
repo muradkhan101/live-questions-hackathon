@@ -38,27 +38,18 @@ export default class MessageBox extends React.Component {
     state = {
         message : ''
     }
-    checkKeypress(key) {
-        if (key === 13 && this.state.message !== '') {
-            this.props.onSubmit({
-                message: this.state.message,
-                name: this.context.name,
-                timestamp: Date.now()
-            })
-            this.state.message = '';
-        }
-    }
+    
     updateState(value) { this.setState({message: value}); }
     // key = Enter or charCode = 13
     render() {
         return (
             <InputContainer>
                 <TextInput 
-                onKeyPress={(e) => this.checkKeypress(e.charCode)}
+                onKeyPress={(e) => this.props.checkKeypress.bind(this)(e.charCode)}
                 onChange={(e) => this.updateState(e.target.value)}
                 value={this.state.message}
                 type="text" placeholder={this.props.placeholder} />
-                <Image onClick={() => this.checkKeypress(13)} src="airplane.svg"/>
+                <Image onClick={() => this.props.checkKeypress.bind(this)(13)} src="airplane.svg"/>
             </InputContainer>
         )
     }
