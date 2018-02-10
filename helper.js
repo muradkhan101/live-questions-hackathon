@@ -16,7 +16,7 @@ function decrementScore(messageList, id) {
 }
 
 function updateObject(object, newData) {
-    return Object.assign({}, object, )
+    return Object.assign({}, object);
 }
 
 module.exports = {
