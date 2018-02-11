@@ -140,6 +140,14 @@ io.on('connection', (socket) => {
     })
 })
 
+<<<<<<< HEAD
 http.listen(process.env.PORT || 5000, () => {
     console.log('Listening on port:', process.env.PORT || 5000);
+||||||| merged common ancestors
+http.listen(8001, () => {
+    console.log('Listening on port: 8000');
+=======
+http.listen(8001, () => {
+    console.log('Listening on port: 8001');
+>>>>>>> routes
 })
