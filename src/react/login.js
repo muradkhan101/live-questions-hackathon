@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import ChatRoom from './ChatRoom';
 import MessageBox from './ChatBox/messagebox';
 import { SANSSERIF, FONTSIZE, CHARCOAL } from '../shared/constants';
 
@@ -35,31 +34,33 @@ let BodyText = styled.p`
     margin-bottom: 8px;
 `
 
-export default class ChatRoomLogin extends React.Component {
-    state = {
-        room: ''
-    }
-    messageCheck(key) {
-        if (key === 13 && this.state.message !== '') {
-            this.props.onSubmit({
-                room: this.state.message
-            })
-            this.state.message = '';
+export default function LoginWrapper(Comp, test) {
+    return class ChatRoomWrappedLogin extends React.Component {
+        state = {
+            room: ''
         }
-    }
-    onSubmit({room}) {
-        this.setState({room: room})
-    }
-    render() {
-        let toRender = this.state.room == ''
-            ? <Container>
-                <Modal>
-                    <Title> Login to a Room </Title>
-                    <BodyText> Enter the name of a chat room to join and get your questions answered by others! </BodyText>
-                    <MessageBox checkKeypress={this.messageCheck} placeholder={"Enter a room name"} onSubmit={(data) => this.onSubmit(data)} />
-                </Modal>
-            </Container>
-            : <ChatRoom room={this.state.room}/>
-        return toRender;
+        messageCheck(key) {
+            if (key === 13 && this.state.message !== '') {
+                this.props.onSubmit({
+                    room: this.state.message
+                })
+                this.state.message = '';
+            }
+        }
+        onSubmit({ room }) {
+            this.setState({ room: room })
+        }
+        render() {
+            let toRender = this.state.room == ''
+                ? <Container>
+                    <Modal>
+                        <Title> Login to a Room </Title>
+                        <BodyText> Enter the name of a chat room to join and get your questions answered by others! </BodyText>
+                        <MessageBox checkKeypress={this.messageCheck} placeholder={"Enter a room name"} onSubmit={(data) => this.onSubmit(data)} />
+                    </Modal>
+                </Container>
+                : <Comp room={this.state.room} />
+            return toRender;
+        }
     }
 }

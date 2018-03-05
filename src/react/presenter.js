@@ -1,20 +1,22 @@
 import React from 'react';
 import DrawingCanvas from './canvas/canvas';
-import { object, array } from 'prop-types';
+import { object, string } from 'prop-types';
 import {} from 'bootstrap/dist/css/bootstrap.css';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import { Grid, Row, Col, Panel, Button } from 'react-bootstrap';
-import $ from 'jquery';
+import { Grid, Row, Col, Panel } from 'react-bootstrap';
 
 export default class Presenter extends React.Component {
-    static contextTypes = {
-        messages: array,
-        scores: object,
-    };
-    
+	static childContextTypes = {
+		socket: object,
+		name: string,
+		scores: object,
+		room: string,
+	}
+	
+	
     render() {
         let { scores, messages } = this.context;
-
+		let { room } = this.props;
         var top10 = messages.slice().sort((a, b) => scores[a.id] < scores[b.id] ? 1 : -1)
                     .filter( (x, i) => i < 10);
 
@@ -23,8 +25,8 @@ export default class Presenter extends React.Component {
 				<Row className="show-grid">
 					<Col xs={12} sm={12} md={8} lg={8}>
 						<Panel header="Presenter info" bsStyle="warning">
-                            <span>Event: "Valley Hackathon" </span>
-                            <span>Presenter: "Rami Malek"</span>
+                            <span>Event: {{room}} </span>
+                            <span>Presenter: You!</span>
 		 				</Panel>
 					</Col>
 					<Col xs={12} sm={12} md={4} lg={4}>

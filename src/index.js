@@ -1,21 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import './index.css';
-import HomeComponent from './react/home';
 import registerServiceWorker from './registerServiceWorker';
-<<<<<<< HEAD
 import LoginScreen from './react/login';
-||||||| merged common ancestors
-import Main from './react/main';
-=======
->>>>>>> routes
+import ChatRoom from './react/ChatRoom';
+import PresenterScreen from './react/presenter';
 
-<<<<<<< HEAD
-ReactDOM.render(<LoginScreen />, document.getElementById('root'));
-||||||| merged common ancestors
-ReactDOM.render(<Main />, document.getElementById('root'));
-=======
-ReactDOM.render((
-   <HomeComponent/> ), document.getElementById('root'));
->>>>>>> routes
+const App = () => (
+    <div>
+        <Route path="/presenter" component={LoginScreen(PresenterScreen)}/>
+        <Route path="/" component={LoginScreen(ChatRoom)}/>
+    </div>
+)
+
+ReactDOM.render(<BrowserRouter><App/></BrowserRouter>, document.getElementById('root'));
 registerServiceWorker();

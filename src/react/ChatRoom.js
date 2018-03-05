@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { object, string } from 'prop-types';
-import openSocket from 'socket.io-client';
+import { object, string, array } from 'prop-types';
 
 import MessageList from './ChatBox/messagelist';
 import TopMessageList from './ChatBox/topmessagelist';
@@ -12,8 +11,9 @@ import MiniTitle from './Profile/minititle';
 import { BASEURL } from '../shared/constants';
 import fetch from 'node-fetch';
 
-import DrawingCanvas from './canvas/drawing-canvas';
 import ViewingCanvas from './canvas/viewing-canvas';
+
+import SocketWrapper from './socketWrapper';
 
 let Flex = styled.div`
     display: flex;
@@ -30,58 +30,27 @@ let StickToBottom = styled.div`
     bottom: 8px;
     width: 100%;
 `
-export default class Main extends React.Component {
-    static childContextTypes = {
+class Main extends React.Component {
+    static contextTypes = {
         socket: object,
-        name: string,
+        messages: array,
+        replies: object,
         scores: object,
         room: string,
     }
-    state = {
-        socket: undefined,
-        messages: [],
-        replies: {}, // Maps message id to array of replies
-        scores: {}, // Maps message + reply ids to score
-        name: '',
-        context: '',
+    static childContextTypes = {
+        name: string
     }
-    
-    componentDidMount() {
-        this.state.socket = openSocket('http://localhost:5000');
-
-        this.state.socket.on('new message', (message) => {
-            this.setState({messages: [...this.state.messages, message]})
-            this.state.scores[message.id] = 0;
-        })
-        this.state.socket.on('new reply', ({ replyId, reply }) => {
-            let repliesForMessage = this.state.replies[replyId];
-            let newReplyArray = repliesForMessage ? repliesForMessage : [];
-            this.state.scores[reply.id] = 0;
-            this.setState({
-                replies: Object.assign( {}, this.state.replies, {[replyId]: [...newReplyArray, reply]})
-            })
-        })
-        this.state.socket.on('score update', (update) => {
-           this.setState({
-               scores: Object.assign({}, this.state.scores,
-                {[update.id]: update.score})
-           })
-        })
-
-        this.state.socket.on('initial data', (messages) => {
-            
-        })
-
-        this.state.socket.emit('subscribe', this.props.room);
+    state = {
+        context: '',
+        name: '',
     }
     getChildContext() {
         return {
-            socket: this.state.socket,
-            name: this.state.name,
-            scores: this.state.scores,
-            room: this.props.room || Math.floor(Math.random() * 100000),
+            name: this.state.name
         }
     }
+    shouldComponentUpdate() { return true; }
     question(data) {
         let requestOptions = {
             method: 'post',
@@ -103,7 +72,7 @@ export default class Main extends React.Component {
                 context: response.context
             })
         })
-        this.state.socket.emit('message', data, this.getChildContext().room);
+        this.context.socket.emit('message', data, this.context.room);
     }
     login({message}) {
         this.setState({
@@ -122,7 +91,7 @@ export default class Main extends React.Component {
         }
     }
     render() {
-        let { messages, replies, scores } = this.state;
+        let { messages, replies } = this.context;
         return (
             <Container>
                 <Header event={this.props.room}/>
@@ -147,3 +116,5 @@ export default class Main extends React.Component {
         )
     }
 }
+
+export default SocketWrapper(Main);
