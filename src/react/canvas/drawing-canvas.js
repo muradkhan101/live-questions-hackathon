@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { object, string } from 'prop-types';
-import DrawableCanvas from 'react-drawable-canvas';
-import ColorOption from './colorOptions';
+import DrawableCanvas from './drawablecanvas';
+// import ColorOption from './colorOptions';
 import Uploader from './photouploader';
 
 let Container = styled.main`
@@ -60,6 +60,7 @@ export default class DrawingCanvas extends React.Component {
     sendPhoto() {
         let { canvas } = this.state;
         let imageData = canvas.toDataURL();
+        console.log(imageData);
         this.context.socket.emit('canvas', imageData, this.context.room);
     }
     render() {

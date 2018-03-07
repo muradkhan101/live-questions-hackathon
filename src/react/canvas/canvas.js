@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import DrawableCanvas from 'react-drawable-canvas';
+import DrawableCanvas from './drawablecanvas';
 import ColorOption from './colorOptions';
 import Uploader from './photouploader';
 import { BLUE, FONTSIZE, CHARCOAL } from '../../shared/constants';
@@ -13,18 +13,6 @@ let Container = styled.div`
 let Flex = styled.div`
     display: flex;
     justify-context: space-between;
-`
-let Button = styled.button`
-    background: ${BLUE};
-    padding: 4px 6px;
-    font-size: ${FONTSIZE.sm};
-    border-radius: 5px;
-    border-bottom: 3px solid ${CHARCOAL};
-    line-height: 0;
-    :focus {
-        outline: none;
-        border-bottom: 1px solid ${CHARCOAL};
-    }
 `
 export default class DrawingCanvas extends React.Component {
     state = {

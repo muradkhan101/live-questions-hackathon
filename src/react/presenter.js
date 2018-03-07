@@ -1,22 +1,24 @@
 import React from 'react';
-import DrawingCanvas from './canvas/canvas';
-import { object, string } from 'prop-types';
+import DrawingCanvas from './canvas/drawing-canvas';
+import { object, string, array } from 'prop-types';
 import {} from 'bootstrap/dist/css/bootstrap.css';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { Grid, Row, Col, Panel } from 'react-bootstrap';
 
-export default class Presenter extends React.Component {
-	static childContextTypes = {
-		socket: object,
+import SocketWrapper from './socketWrapper';
+
+class Presenter extends React.Component {
+	static contextTypes = {
 		name: string,
 		scores: object,
 		room: string,
+		messages: array,
 	}
 	
 	
     render() {
-        let { scores, messages } = this.context;
-		let { room } = this.props;
+		console.log(this.context);
+        let { scores, messages, room } = this.context;
         var top10 = messages.slice().sort((a, b) => scores[a.id] < scores[b.id] ? 1 : -1)
                     .filter( (x, i) => i < 10);
 
@@ -25,7 +27,7 @@ export default class Presenter extends React.Component {
 				<Row className="show-grid">
 					<Col xs={12} sm={12} md={8} lg={8}>
 						<Panel header="Presenter info" bsStyle="warning">
-                            <span>Event: {{room}} </span>
+                            <span>Event: {room} </span>
                             <span>Presenter: You!</span>
 		 				</Panel>
 					</Col>
@@ -51,3 +53,5 @@ export default class Presenter extends React.Component {
         )
     }
 }
+
+export default SocketWrapper(Presenter);

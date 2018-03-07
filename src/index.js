@@ -10,7 +10,7 @@ import PresenterScreen from './react/presenter';
 const App = () => (
     <div>
         <Route path="/presenter" component={LoginScreen(PresenterScreen)}/>
-        <Route path="/" component={LoginScreen(ChatRoom)}/>
+        <Route exact path="/" component={LoginScreen(ChatRoom)}/>
     </div>
 )
 

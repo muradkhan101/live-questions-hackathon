@@ -14,13 +14,14 @@ export default class ViewingCanvas extends React.Component {
     }
     componentDidUpdate() {
         if (this.context.socket)
-            this.context.socket.on('update canvas', ({ imageData, width, height }) => {
-                this.receivePhoto(imageData, height, width);
+            this.context.socket.on('update canvas', ( imageData) => {
+                this.receivePhoto(imageData);
             })
     }
     receivePhoto(imageData) {
         let image = new Image();
         image.onload = () => {
+            console.log(this.refs);
             this.refs.canvas.width = image.width;
             this.refs.canvas.height = image.height;
             this.state.ctx.drawImage(image, 0, 0);
