@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ProfilePicture from './Profile/images';
+import ProfilePicture from './Profile/ProfileImage';
 
 import { FONTSIZE, SANSSERIF, BLUE, CHARCOAL } from '../shared/constants';
 

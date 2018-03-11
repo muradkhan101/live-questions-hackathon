@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import MessageBox from './ChatBox/messagebox';
+import MessageBox from './ChatBox/MessageBox';
 import { SANSSERIF, FONTSIZE, CHARCOAL } from '../shared/constants';
 
 let Container = styled.div`

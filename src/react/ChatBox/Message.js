@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { number, object, string } from 'prop-types';
 import { FONTSIZE, CHARCOAL, SANSSERIF } from '../../shared/constants';
-import UserName from '../Profile/minititle';
-import TimeStamp from '../Profile/timestamp';
-import ProfileImage from '../Profile/images';
-import Voter from './upvote';
-import MessageBox from './messagebox';
+import UserName from '../Profile/MiniTitle';
+import TimeStamp from '../Profile/TimeStamp';
+import ProfileImage from '../Profile/ProfileImage';
+import Voter from './VoteSystem';
+import MessageBox from './MessageBox';
 
 let Text = styled.div`
     font-family: ${SANSSERIF};

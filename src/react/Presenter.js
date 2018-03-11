@@ -1,11 +1,11 @@
 import React from 'react';
-import DrawingCanvas from './canvas/drawing-canvas';
+import DrawingCanvas from './canvas/DrawingCanvas';
 import { object, string, array } from 'prop-types';
 import {} from 'bootstrap/dist/css/bootstrap.css';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { Grid, Row, Col, Panel } from 'react-bootstrap';
 
-import SocketWrapper from './socketWrapper';
+import SocketWrapper from './SocketWrapper';
 
 class Presenter extends React.Component {
 	static contextTypes = {

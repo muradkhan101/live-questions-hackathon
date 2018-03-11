@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Message from './message';
+import Message from './Message';
 
 let MessageContainer = styled.div`
     flex-grow: 1;

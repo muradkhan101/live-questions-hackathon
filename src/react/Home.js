@@ -4,11 +4,11 @@ import { object, string, func, array } from 'prop-types';
 import openSocket from 'socket.io-client';
 import {HashRouter, Route} from 'react-router-dom';
 import fetch from 'node-fetch';
-import Attendee from './attendee';
-import Presenter from './presenter';
+import Attendee from './Attendee';
+import Presenter from './Presenter';
 import { BASEURL } from '../shared/constants';
 
-export default class HomeComponent extends React.Component {
+export default class Home extends React.Component {
     static childContextTypes = {
         socket: object,
         name: string,
