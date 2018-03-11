@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client';
 import React from 'react';
 import { object, string, array } from 'prop-types';
 
-export default function socketWrapper(Comp) {
+export default function SocketWrapper(Comp) {
     return class SocketWrapperComponent extends React.Component {
         static childContextTypes = {
             socket: object,

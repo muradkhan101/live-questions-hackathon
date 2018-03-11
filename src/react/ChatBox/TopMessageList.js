@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { object } from 'prop-types';
-import Message from './message';
-import MiniTitle from '../Profile/minititle';
+import Message from './Message';
+import MiniTitle from '../Profile/MiniTitle';
 let MessageContainer = styled.div`
     flex-grow: 1;
     padding-top: 8px;

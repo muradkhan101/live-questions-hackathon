@@ -69,7 +69,7 @@ const Upload = styled.span`
   }
 `
 
-export default class Uploader extends React.Component {
+export default class PhotoUploader extends React.Component {
     render() {
         let { onChange } = this.props;
         return (

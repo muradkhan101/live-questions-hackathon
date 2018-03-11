@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { object, string } from 'prop-types';
-import DrawableCanvas from './drawablecanvas';
+import DrawableCanvas from './DrawableCanvas';
 // import ColorOption from './colorOptions';
-import Uploader from './photouploader';
+import PhotoUploader from './PhotoUploader';
 
 let Container = styled.main`
     display: flex;
@@ -68,7 +68,7 @@ export default class DrawingCanvas extends React.Component {
         return (
             <Container ref="canvasContainer">
                 <DrawableCanvas onStop={() => this.sendPhoto()}/>
-                <Uploader onChange={(e) => this.onChange(e)} />
+                <PhotoUploader onChange={(e) => this.onChange(e)} />
             </Container>
         )
     }

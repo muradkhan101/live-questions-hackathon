@@ -2,18 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import { object, string, array } from 'prop-types';
 
-import MessageList from './ChatBox/messagelist';
-import TopMessageList from './ChatBox/topmessagelist';
-import Header from './header';
-import MessageBox from './ChatBox/messagebox';
-import MiniTitle from './Profile/minititle';
+import MessageList from './ChatBox/MessageList';
+import TopMessageList from './ChatBox/TopMessageList';
+import Header from './Header';
+import MessageBox from './ChatBox/MessageBox';
+import MiniTitle from './Profile/MiniTitle';
 
 import { BASEURL } from '../shared/constants';
 import fetch from 'node-fetch';
 
-import ViewingCanvas from './canvas/viewing-canvas';
+import ViewingCanvas from './canvas/ViewingCanvas';
 
-import SocketWrapper from './socketWrapper';
+import SocketWrapper from './SocketWrapper';
 
 let Flex = styled.div`
     display: flex;

@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import LoginScreen from './react/login';
+import LoginScreen from './react/LoginWrapper';
 import ChatRoom from './react/ChatRoom';
-import PresenterScreen from './react/presenter';
+import PresenterScreen from './react/Presenter';
 
 const App = () => (
     <div>
